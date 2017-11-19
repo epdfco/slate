@@ -1,15 +1,11 @@
 ---
-title: API Reference
+title: ePDF API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='#'>Login to access API Key</a>
 
 includes:
   - errors
@@ -19,221 +15,135 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the ePDF API. You can use this API to create PDF's from your [PDF templates](https://app.epdf.co/pdf).
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+We are working on ePDF daily to make it faster and simpler. Feel free to reach out to the founder if you have any feedback or suggestions: volkan@epdf.co.
 
 # Authentication
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
+> Example Request:
 
 ```shell
 # With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl https://api.epdf.co/v1/limit/ \
+  -u example_API_key:
 ```
 
-```javascript
-const kittn = require('kittn');
+> Make sure to replace `example_API_key` with your API key.
 
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+Authentication to the API is performed using Basic Auth. Include your API key as the username. The password can be left blank. You can find your API Key on your [settings page](https://app.epdf.co/settings/profile).
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>example_API_key</code> with your API key.
 </aside>
 
-# Kittens
+# Limit
 
-## Get All Kittens
+## Get remaining amount of PDF's that can be created
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl https://api.epdf.co/v1/limit/ \
+  -u example_API_key:
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+> The above command returns a simple JSON structured like this:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+{
+    "remaining": 36
+}
 ```
 
 This endpoint retrieves all kittens.
 
+
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://api.epdf.co/v1/limit/`
 
-### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+# Create PDF's
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+## Create Single PDF
 
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
+
+curl https://api.epdf.co/v1/pdf/ \
+  -u example_API_key: \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d JSON_structure
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
+> The above command requires a simple JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+    "chart": {},
+    "image": {},
+    "table": {},
+    "text": {"test_text": "working"},
+    "pdf": {
+        "filename": "testfile",
+        "pdfId": "d5da1e6e-f48e-42d1-865b-07b06ffa5722"
+    }
 }
 ```
 
-This endpoint retrieves a specific kitten.
+> To get the specfic JSON structure for a PDF go to the template mode at [PDF templates](https://app.epdf.co/pdf)
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+This endpoint creates a binary PDF file.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`POST https://api.epdf.co/v1/pdf/`
 
-### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+## Create Multiple PDF
 
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
+
+curl https://api.epdf.co/v1/pdfs/ \
+  -u example_API_key: \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d JSON_structure
 ```
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
+> The above command requires a simple JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
+[
+    {
+        "chart": {},
+        "image": {},
+        "table": {},
+        "text": {"test_text": "working"},
+        "pdf": {
+            "filename": "testfile",
+            "pdfId": "d5da1e6e-f48e-42d1-865b-07b06ffa5722"
+        }
+    },
+    {
+        "chart": {},
+        "image": {},
+        "table": {},
+        "text": {"test_text": "working 2"},
+        "pdf": {
+            "filename": "testfile2",
+            "pdfId": "d5da1e6e-f48e-42d1-865b-07b06ffa5722"
+        }
+    },
+]
 ```
 
-This endpoint retrieves a specific kitten.
+> To get the specfic JSON structure for a PDF go to the template mode at [PDF templates](https://app.epdf.co/pdfs/)
+
+This endpoint creates a zip file containing multiple PDF's.
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+`POST https://api.epdf.co/v1/pdfs/`
